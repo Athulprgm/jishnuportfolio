@@ -123,7 +123,6 @@ const quoteEl = ref<HTMLElement | null>(null)
 const bioEl = ref<HTMLElement | null>(null)
 const cardEl = ref<HTMLElement | null>(null)
 const statsEl = ref<HTMLElement | null>(null)
-const sectionEl = ref<HTMLElement | null>(null)
 
 const profileItems = [
   { label: 'Role', value: 'Full Stack Dev' },

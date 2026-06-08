@@ -13,7 +13,7 @@
         <div class="timeline-line"></div>
 
         <div
-          v-for="(exp, i) in experiences"
+          v-for="exp in experiences"
           :key="exp.company"
           class="relative mb-10 last:mb-0"
           :style="{ paddingLeft: '1.5rem' }"
