@@ -18,7 +18,7 @@
       <!-- Large Card 1: BloodUndo -->
       <div
         class="bento-large group relative overflow-hidden cursor-pointer"
-        style="border-radius:24px;aspect-ratio:16/10;"
+        style="border-radius:24px;"
         @mousemove="handleTilt($event, 'bloodundo')"
         @mouseleave="resetTilt('bloodundo')"
         @click="openModal(projects[0])"
@@ -99,7 +99,7 @@
       <!-- Large Card 2: E-Commerce Suite -->
       <div
         class="bento-large group relative overflow-hidden cursor-pointer"
-        style="border-radius:24px;aspect-ratio:16/10;"
+        style="border-radius:24px;"
         @mousemove="handleTilt($event, 'ecom')"
         @mouseleave="resetTilt('ecom')"
         @click="openModal(projects[3])"
@@ -280,8 +280,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.bento-large { transform-style: preserve-3d; }
-.bento-medium { transform-style: preserve-3d; }
+.bento-large {
+  transform-style: preserve-3d;
+  aspect-ratio: 16/10;
+}
+.bento-medium {
+  transform-style: preserve-3d;
+}
+@media (max-width: 768px) {
+  .bento-large {
+    aspect-ratio: auto;
+    min-height: 380px;
+  }
+}
 .modal-fade-enter-active, .modal-fade-leave-active { transition: opacity 0.3s ease; }
 .modal-fade-enter-from, .modal-fade-leave-to { opacity: 0; }
 </style>

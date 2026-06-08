@@ -50,14 +50,16 @@
       </div>
 
       <!-- CTA button -->
-      <a
-        href="#contact"
-        @click.prevent="scrollToSection('contact')"
-        class="hidden md:block btn-primary pointer-events-auto"
-        style="padding:0.5rem 1.25rem;font-size:0.75rem;"
-      >
-        Let's Talk
-      </a>
+      <div class="hidden md:block">
+        <a
+          href="#contact"
+          @click.prevent="scrollToSection('contact')"
+          class="btn-primary pointer-events-auto"
+          style="padding:0.5rem 1.25rem;font-size:0.75rem;"
+        >
+          Let's Talk
+        </a>
+      </div>
 
       <!-- Mobile Menu Toggle -->
       <button

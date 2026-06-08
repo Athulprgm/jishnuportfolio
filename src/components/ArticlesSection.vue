@@ -13,7 +13,6 @@
         :key="article.title"
         class="group relative p-8 rounded-2xl cursor-pointer transition-all duration-300 hover:border-red-500/20"
         style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);"
-        :style="i === 0 ? 'grid-column:span 2;' : ''"
         :class="{ 'md:col-span-2': i === 0 }"
       >
         <!-- Top row -->

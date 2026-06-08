@@ -72,7 +72,7 @@
         <div class="p-8 rounded-2xl" style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);">
           <div class="section-label mb-6">Send a Message</div>
           <form @submit.prevent="handleSubmit" class="space-y-5">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label class="text-xs font-medium mb-2 block" style="color:#6B7280;letter-spacing:0.06em;text-transform:uppercase;">Name</label>
                 <input

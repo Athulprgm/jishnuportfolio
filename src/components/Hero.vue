@@ -25,7 +25,7 @@
         <h1
           ref="headlineEl"
           class="font-black text-white mb-6 leading-[1.0]"
-          style="font-size: clamp(2.8rem, 6vw, 5.5rem); letter-spacing:-0.03em; opacity:0; transform:translateY(30px);"
+          style="font-size: clamp(2.2rem, 6vw, 5.5rem); letter-spacing:-0.03em; opacity:0; transform:translateY(30px);"
         >
           Engineering<br />
           products that<br />
