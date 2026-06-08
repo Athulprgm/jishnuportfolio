@@ -227,11 +227,54 @@ const tickSphere = () => {
     angleY += (0.0015 - angleY) * 0.08
   }
 
-  // Render tags
+  // Render tags and connections
+  // 1. Update rotations first
   tags.forEach(tag => {
     rotateX(tag, angleX)
     rotateY(tag, angleY)
+  })
 
+  // 2. Draw connection lines between nearby tags
+  for (let i = 0; i < tags.length; i++) {
+    for (let j = i + 1; j < tags.length; j++) {
+      const t1 = tags[i]
+      const t2 = tags[j]
+
+      const dx = t1.x - t2.x
+      const dy = t1.y - t2.y
+      const dz = t1.z - t2.z
+      const dist = Math.sqrt(dx * dx + dy * dy + dz * dz)
+
+      // Only draw lines between close tags to form constellation
+      if (dist < 125) {
+        const scale1 = focusLength / (focusLength + t1.z)
+        const projX1 = t1.x * scale1 + cx
+        const projY1 = t1.y * scale1 + cy
+
+        const scale2 = focusLength / (focusLength + t2.z)
+        const projX2 = t2.x * scale2 + cx
+        const projY2 = t2.y * scale2 + cy
+
+        // Calculate opacity based on Z depth
+        const zAvg = (t1.z + t2.z) / 2
+        const lineAlpha = Math.max(0, Math.min((radius - zAvg) / (radius * 2) * 0.18, 0.22))
+
+        ctx.save()
+        ctx.globalAlpha = lineAlpha
+        // Front connections are cyan, back connections are violet
+        ctx.strokeStyle = zAvg < 0 ? '#00F5FF' : '#8B5CF6'
+        ctx.lineWidth = 0.55
+        ctx.beginPath()
+        ctx.moveTo(projX1, projY1)
+        ctx.lineTo(projX2, projY2)
+        ctx.stroke()
+        ctx.restore()
+      }
+    }
+  }
+
+  // 3. Render the text tags on top
+  tags.forEach(tag => {
     // 3D perspective projection
     const scale = focusLength / (focusLength + tag.z)
     const projX = tag.x * scale + cx

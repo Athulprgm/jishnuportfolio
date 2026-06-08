@@ -15,7 +15,7 @@
     <div class="relative max-w-7xl mx-auto px-6 md:px-10 w-full grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
       
       <!-- LEFT: Text Content -->
-      <div class="flex flex-col">
+      <div ref="leftColEl" class="flex flex-col">
         <!-- Eyebrow -->
         <div ref="eyebrowEl" class="section-label mb-8" style="opacity:0;transform:translateY(20px);">
           Full Stack Developer
@@ -160,7 +160,11 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 
+gsap.registerPlugin(ScrollTrigger)
+
+const leftColEl = ref<HTMLElement | null>(null)
 const eyebrowEl = ref<HTMLElement | null>(null)
 const headlineEl = ref<HTMLElement | null>(null)
 const descEl = ref<HTMLElement | null>(null)
@@ -178,7 +182,11 @@ const quickStats = [
 ]
 
 const scrollTo = (id: string) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  if (window.portfolioLenis) {
+    window.portfolioLenis.scrollTo('#' + id)
+  } else {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+  }
 }
 
 const magneticMove = (e: MouseEvent, el: HTMLElement | null) => {
@@ -221,6 +229,34 @@ onMounted(() => {
       { opacity: 1, x: 0, duration: 1.0, ease: 'power3.out' },
       '-=0.8'
     )
+  }
+
+  // Scroll Trigger Parallax/Fade effects
+  if (leftColEl.value) {
+    gsap.to(leftColEl.value, {
+      y: -80,
+      opacity: 0.2,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    })
+  }
+
+  if (portraitCard.value) {
+    gsap.to(portraitCard.value, {
+      y: 90,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#hero',
+        start: 'top top',
+        end: 'bottom top',
+        scrub: true
+      }
+    })
   }
 })
 </script>

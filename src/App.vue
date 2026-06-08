@@ -102,6 +102,8 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted } from 'vue'
 import Lenis from 'lenis'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { usePortfolioStore } from '@/stores/portfolio'
 
 // Core layout
@@ -124,6 +126,14 @@ import Contact from '@/components/Contact.vue'
 // Overlay
 import CommandPalette from '@/components/CommandPalette.vue'
 
+declare global {
+  interface Window {
+    portfolioLenis?: Lenis | null
+  }
+}
+
+gsap.registerPlugin(ScrollTrigger)
+
 const store = usePortfolioStore()
 let lenisInstance: Lenis | null = null
 
@@ -134,6 +144,10 @@ onMounted(() => {
     smoothWheel: true
   })
 
+  // Synchronize ScrollTrigger with Lenis updates
+  lenisInstance.on('scroll', ScrollTrigger.update)
+  window.portfolioLenis = lenisInstance
+
   function raf(time: number) {
     lenisInstance?.raf(time)
     requestAnimationFrame(raf)
@@ -143,6 +157,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   lenisInstance?.destroy()
+  window.portfolioLenis = null
 })
 </script>
 

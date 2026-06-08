@@ -91,10 +91,15 @@ const playClick = () => {
 
 // Scroll navigation helper
 const scrollToSection = (id: string) => {
-  const el = document.getElementById(id)
-  if (el) {
-    el.scrollIntoView({ behavior: 'smooth' })
+  if (window.portfolioLenis) {
+    window.portfolioLenis.scrollTo('#' + id)
     store.setActiveSection(id)
+  } else {
+    const el = document.getElementById(id)
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' })
+      store.setActiveSection(id)
+    }
   }
 }
 

@@ -18,6 +18,7 @@ let mouseX = 0
 let mouseY = 0
 let targetX = 0
 let targetY = 0
+let scrollProgress = 0
 
 // Create a circular gradient texture programmatically (avoiding external PNG image downloads)
 const createCircleTexture = (): THREE.Texture => {
@@ -143,20 +144,35 @@ const onWindowResize = () => {
 }
 
 const tick = () => {
-  // Slowly rotate the galaxy
+  // Fetch scroll progress smoothly
+  const currentScroll = window.scrollY
+  const maxScroll = document.documentElement.scrollHeight - window.innerHeight || 1
+  const targetProgress = Math.min(Math.max(currentScroll / maxScroll, 0), 1)
+  
+  // Damped inertia for scroll transitions
+  scrollProgress += (targetProgress - scrollProgress) * 0.05
+  
+  // Calculate relative velocity for speed warp
+  const velocity = Math.abs(targetProgress - scrollProgress)
+
+  // Slowly rotate the galaxy, accelerating during active scrolling (warp effect)
   if (particleSystem) {
-    particleSystem.rotation.y += 0.0008
-    particleSystem.rotation.z += 0.0002
+    particleSystem.rotation.y += 0.0006 + velocity * 0.003
+    particleSystem.rotation.z += 0.00015
   }
 
   // Smooth mouse movement follow (inertia damping)
   targetX += (mouseX - targetX) * 0.05
   targetY += (mouseY - targetY) * 0.05
 
-  if (camera) {
-    camera.position.x = targetX
-    camera.position.y = -targetY
-    camera.lookAt(scene.position)
+  if (camera && scene) {
+    // 3D camera path: fly into the galaxy along Z, offset X/Y slightly on path
+    camera.position.x = targetX + Math.sin(scrollProgress * Math.PI) * 45
+    camera.position.y = -targetY + scrollProgress * 120
+    camera.position.z = 250 - scrollProgress * 190 // Zooms closer/through center of particles
+    
+    // Look ahead of the path slightly
+    camera.lookAt(new THREE.Vector3(0, scrollProgress * 30, 0))
   }
 
   if (renderer && scene && camera) {

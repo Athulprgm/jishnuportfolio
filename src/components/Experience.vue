@@ -20,14 +20,14 @@
         >
           <!-- Timeline dot -->
           <div
-            class="absolute flex items-center justify-center rounded-full"
-            style="width:12px;height:12px;background:#D62828;left:-6px;top:6px;box-shadow:0 0 12px rgba(214,40,40,0.5);"
+            class="absolute flex items-center justify-center rounded-full timeline-dot"
+            style="width:12px;height:12px;background:#D62828;left:-6px;top:6px;box-shadow:0 0 12px rgba(214,40,40,0.5);opacity:0;transform:scale(0);"
           ></div>
 
           <!-- Card -->
           <div
-            class="rounded-2xl p-7 transition-all duration-300 hover:border-red-500/20"
-            style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);"
+            class="timeline-card rounded-2xl p-7 transition-all duration-300 hover:border-red-500/20"
+            style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);opacity:0;"
           >
             <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-4">
               <div>
@@ -104,7 +104,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useIntersectionObserver } from '@vueuse/core'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const headerEl = ref<HTMLElement | null>(null)
 const timelineEl = ref<HTMLElement | null>(null)
@@ -168,9 +171,66 @@ onMounted(() => {
   useIntersectionObserver(headerEl, ([{ isIntersecting }]) => {
     if (isIntersecting) {
       gsap.to(headerEl.value, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
-      gsap.to(timelineEl.value, { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.15 })
       gsap.to(sidebarEl.value, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out', delay: 0.25 })
     }
   }, { threshold: 0.05 })
+
+  if (timelineEl.value) {
+    // Reveal timeline container opacity
+    gsap.set(timelineEl.value, { opacity: 1 })
+
+    // Self-drawing vertical timeline line
+    gsap.fromTo('.timeline-line',
+      { scaleY: 0, transformOrigin: 'top center' },
+      {
+        scaleY: 1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.timeline-line',
+          start: 'top 70%',
+          end: 'bottom 60%',
+          scrub: true
+        }
+      }
+    )
+
+    // Springing timeline dots reveal on scroll
+    const dots = timelineEl.value.querySelectorAll('.timeline-dot')
+    dots.forEach((dot) => {
+      gsap.fromTo(dot,
+        { scale: 0, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.6,
+          ease: 'back.out(1.7)',
+          scrollTrigger: {
+            trigger: dot,
+            start: 'top 80%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    })
+
+    // Slide and fade in experience cards on scroll
+    const cards = timelineEl.value.querySelectorAll('.timeline-card')
+    cards.forEach((card) => {
+      gsap.fromTo(card,
+        { opacity: 0, x: -30 },
+        {
+          opacity: 1,
+          x: 0,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 85%',
+            toggleActions: 'play none none none'
+          }
+        }
+      )
+    })
+  }
 })
 </script>

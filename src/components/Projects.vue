@@ -202,7 +202,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useIntersectionObserver } from '@vueuse/core'
+
+gsap.registerPlugin(ScrollTrigger)
 
 interface Project {
   title: string; category: string; description: string; tech: string[];
@@ -243,9 +246,36 @@ onMounted(() => {
   useIntersectionObserver(headerEl, ([{ isIntersecting }]) => {
     if (isIntersecting) {
       gsap.to(headerEl.value, { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' })
-      gsap.to(gridEl.value, { opacity: 1, duration: 0.7, ease: 'power2.out', delay: 0.2 })
     }
   }, { threshold: 0.1 })
+
+  if (gridEl.value) {
+    // Reveal grid container
+    gsap.set(gridEl.value, { opacity: 1 })
+
+    // Animate bento cards with a 3D entrance folding-open effect
+    gsap.fromTo('.bento-large, .bento-medium',
+      {
+        opacity: 0,
+        y: 60,
+        rotateX: 12,
+        transformPerspective: 1000
+      },
+      {
+        opacity: 1,
+        y: 0,
+        rotateX: 0,
+        duration: 0.9,
+        stagger: 0.15,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: gridEl.value,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      }
+    )
+  }
 })
 </script>
 

@@ -84,7 +84,7 @@
             class="p-6 rounded-2xl flex flex-col gap-1 transition-all duration-300 hover:border-red-500/20 cursor-default"
             style="background:#0B0B0B;border:1px solid rgba(255,255,255,0.06);"
           >
-            <span class="font-black text-white" style="font-size:2.5rem;letter-spacing:-0.04em;line-height:1;">{{ stat.value }}</span>
+            <span class="font-black text-white" style="font-size:2.5rem;letter-spacing:-0.04em;line-height:1;">{{ Math.floor(stat.current) }}{{ stat.suffix }}</span>
             <span class="text-sm" style="color:#6B7280;">{{ stat.label }}</span>
           </div>
         </div>
@@ -116,7 +116,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useIntersectionObserver } from '@vueuse/core'
+
+gsap.registerPlugin(ScrollTrigger)
 
 const labelEl = ref<HTMLElement | null>(null)
 const quoteEl = ref<HTMLElement | null>(null)
@@ -131,12 +134,12 @@ const profileItems = [
   { label: 'Status', value: 'Open to Work' }
 ]
 
-const stats = [
-  { value: '50+', label: 'Projects Shipped' },
-  { value: '5+', label: 'Years Experience' },
-  { value: '30+', label: 'Technologies' },
-  { value: '100%', label: 'Client Satisfaction' }
-]
+const stats = ref([
+  { current: 0, target: 50, suffix: '+', label: 'Projects Shipped' },
+  { current: 0, target: 5, suffix: '+', label: 'Years Experience' },
+  { current: 0, target: 30, suffix: '+', label: 'Technologies' },
+  { current: 0, target: 100, suffix: '%', label: 'Client Satisfaction' }
+])
 
 const skills = ['Vue 3', 'React', 'Node.js', 'TypeScript', 'PostgreSQL', 'MongoDB', 'Docker', 'AWS', 'OpenAI', 'Python', 'Nuxt', 'Next.js', 'Firebase', 'GraphQL']
 
@@ -162,6 +165,20 @@ onMounted(() => {
         gsap.to(el.value, { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', delay: i * 0.1 })
       }
     }, { threshold: 0.1 })
+  })
+
+  // Count up animation for stats
+  stats.value.forEach((stat) => {
+    gsap.to(stat, {
+      current: stat.target,
+      duration: 1.8,
+      ease: 'power2.out',
+      scrollTrigger: {
+        trigger: statsEl.value,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      }
+    })
   })
 })
 </script>

@@ -38,7 +38,12 @@ const navItems = [
 ]
 
 const scrollToSection = (id: string) => {
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
-  store.setActiveSection(id)
+  if (window.portfolioLenis) {
+    window.portfolioLenis.scrollTo('#' + id)
+    store.setActiveSection(id)
+  } else {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' })
+    store.setActiveSection(id)
+  }
 }
 </script>
